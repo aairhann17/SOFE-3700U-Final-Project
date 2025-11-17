@@ -1,6 +1,6 @@
 # SOFE-3700U-Final-Project 
 
-### Artwork Database System  
+### Artwork Museum Database System  
 A Relational Model Inspired by The Metropolitan Museum of Art Open-Access Collection
 
 #### Overview  
