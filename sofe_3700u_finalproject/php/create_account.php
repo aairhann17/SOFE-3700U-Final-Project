@@ -72,7 +72,7 @@
 		</div>
 		<div class="form-group">
 			<label>Password:</label>
-			<input type="password" name="create_password" class="form-control" required>
+			<input type="password" name="create_password" class="form-control" maxlength="64" required>
 		</div>
 		<button type="submit" class="btn btn-primary">Create Account</button>
 	</form>
@@ -83,3 +83,4 @@
 
 </body>
 </html>
+
