@@ -58,7 +58,7 @@
 		</div>
 		<div class="form-group">
 			<label>Password:</label>
-			<input type="password" name="password" class="form-control" required>
+			<input type="password" name="password" class="form-control" maxlength="64" required>
 		</div>
 		<button type="submit" class="btn btn-primary">Sign In</button>
 	</form>
@@ -69,3 +69,4 @@
 
 </body>
 </html>
+
