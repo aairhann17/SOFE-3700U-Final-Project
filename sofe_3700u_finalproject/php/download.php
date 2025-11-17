@@ -66,4 +66,13 @@
 		fclose($file);
 	}
 	exit;
+
 ?>
+
+<form method="post" action="download.php">
+	<input type="radio" id="artist" name="tables" value="artist" checked> Artist<br>
+	<input type="radio" id="object_details" name="tables" value="object_details"> Object Details<br>
+	<input type="radio" id="object_gallery" name="tables" value="object_gallery"> Object Gallery Details<br>
+	<input type="radio" id="object_origins" name="tables" value="object_origins"> Object Origins<br><br>
+	<input type="submit" name="download" value="Download Table"><br><br>
+</form>
