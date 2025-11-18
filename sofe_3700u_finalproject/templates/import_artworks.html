@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import Artworks - Art Museum Database</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .artwork-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            transition: box-shadow 0.3s;
+        }
+        .artwork-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .artwork-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .artwork-image-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        .import-btn {
+            width: 100%;
+        }
+        .search-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .api-badge {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-palette"></i> Art Museum Database
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/view_records.html"><i class="fas fa-list"></i> View Records</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/search.html"><i class="fas fa-search"></i> Search</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/views.html"><i class="fas fa-database"></i> SQL Views</a></li>
+                    {% if user and user.role == 1 %}
+                        <li class="nav-item"><a class="nav-link" href="/add_record.html"><i class="fas fa-plus"></i> Add Artwork</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="/import_artworks.html"><i class="fas fa-download"></i> Import Artworks</a></li>
+                    {% endif %}
+                    {% if user %}
+                        <li class="nav-item"><a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="search-section">
+            <h2><i class="fas fa-cloud-download-alt"></i> Import Artworks from Met Museum</h2>
+            <p class="mb-3">Search and import artworks from The Metropolitan Museum of Art Collection API</p>
+            <span class="api-badge"><i class="fas fa-plug"></i> External REST/JSON API</span>
+            
+            <div class="row mt-4">
+                <div class="col-md-8">
+                    <input type="text" id="searchQuery" class="form-control" placeholder="Search for artworks (e.g., painting, sculpture, Van Gogh...)" value="painting">
+                </div>
+                <div class="col-md-4">
+                    <button id="searchBtn" class="btn btn-light w-100">
+                        <i class="fas fa-search"></i> Search Met Museum
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="loadingSpinner" class="text-center my-5" style="display: none;">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Fetching artworks from Met Museum API...</p>
+        </div>
+
+        <div id="resultsSection" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3><i class="fas fa-images"></i> Search Results</h3>
+                <span id="resultsCount" class="badge bg-primary"></span>
+            </div>
+            <div id="resultsContainer" class="row">
+                <!-- Artwork cards will be inserted here -->
+            </div>
+        </div>
+
+        <div id="noResults" class="alert alert-info" style="display: none;">
+            <i class="fas fa-info-circle"></i> No artworks found. Try a different search term.
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/import_artworks.js') }}"></script>
+</body>
+</html>

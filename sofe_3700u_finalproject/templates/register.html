@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Register - Art Museum DB</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {background: linear-gradient(135deg,#764ba2 0%,#667eea 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;}
+    .card {border-radius:16px;box-shadow:0 10px 35px rgba(0,0,0,.25);}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card p-4">
+          <h2 class="text-center mb-3"><i class="fas fa-user-plus"></i> Create Account</h2>
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, msg in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">{{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+          <form method="post" autocomplete="off" id="registerForm">
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" name="email" class="form-control" required maxlength="100" id="emailField">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Username</label>
+              <input type="text" name="username" class="form-control" required maxlength="64" id="usernameField">
+              <div class="form-text" id="userCheck"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <input type="password" name="password" class="form-control" required minlength="8" id="pwField">
+              <div class="progress mt-1" style="height:6px;">
+                <div class="progress-bar" id="pwStrength" role="progressbar" style="width:0%"></div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Confirm Password</label>
+              <input type="password" name="confirm" class="form-control" required minlength="6">
+            </div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button class="btn btn-success w-100" type="submit"><i class="fas fa-user-check"></i> Register</button>
+          </form>
+          <hr>
+          <p class="text-center mb-0">Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+                  <p class="text-center mt-2 mb-0 small text-muted">
+                    Need read-only access? <a href="{{ url_for('register') }}?guest=true" class="text-decoration-none">Register as Guest</a>
+                  </p>
+        </div>
+      </div>
+    </div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const usernameField = document.getElementById('usernameField');
+const userCheck = document.getElementById('userCheck');
+let userTimer;
+usernameField.addEventListener('input', () => {
+  clearTimeout(userTimer);
+  const val = usernameField.value.trim();
+  if(!val){ userCheck.textContent=''; return; }
+  userTimer = setTimeout(async () => {
+    const r = await fetch('/api/username_available?u=' + encodeURIComponent(val));
+    const d = await r.json();
+    userCheck.textContent = d.available ? 'Username available' : 'Username already taken';
+    userCheck.className = 'form-text ' + (d.available ? 'text-success' : 'text-danger');
+  }, 350);
+});
+const pwField = document.getElementById('pwField');
+const pwStrength = document.getElementById('pwStrength');
+pwField.addEventListener('input', () => {
+  const v = pwField.value;
+  let score = 0;
+  if(v.length >= 8) score += 25;
+  if(/[A-Z]/.test(v)) score += 25;
+  if(/[a-z]/.test(v)) score += 25;
+  if(/\d/.test(v) || /[^A-Za-z0-9]/.test(v)) score += 25;
+  pwStrength.style.width = score + '%';
+  pwStrength.className = 'progress-bar bg-' + (score < 50 ? 'danger' : (score < 75 ? 'warning' : 'success'));
+});
+document.getElementById('registerForm').addEventListener('submit', e => {
+  const pw = pwField.value;
+  const confirm = e.target.confirm.value;
+  if(pw !== confirm){
+    e.preventDefault();
+    alert('Passwords do not match.');
+  }
+});
+</script>
+</body>
+</html>
