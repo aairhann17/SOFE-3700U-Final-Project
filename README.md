@@ -85,7 +85,7 @@ sofe_3700u_finalproject/
 **`app.py`** (Main Application - 1274 lines)
 - **Authentication System**: 
   - `/login`, `/register`, `/logout` routes with session management
-  - Password hashing using PHP's password_hash function
+  - Password hashing using Werkzeug SHA-256
   - Role-based access control: Admin (role=1), User (role=2), Guest (role=3)
   - Decorators: `@login_required`, `@admin_required`, `@allow_guest`
   
